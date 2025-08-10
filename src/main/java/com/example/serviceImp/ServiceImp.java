@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.example.exception.ResourceNotFoundException;
 import com.example.model.Product;
 import com.example.repository.ProductRepository;
 import com.example.service.ProductService;
@@ -41,7 +42,7 @@ public class ServiceImp implements ProductService {
 	public Product getProductById(String id) {
 		// TODO Auto-generated method stub
 		  return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new  ResourceNotFoundException("Product not found with id: " + id));
     }
 	
 
@@ -71,21 +72,7 @@ public class ServiceImp implements ProductService {
 	 public Page<Product> getAllProducts(int page, int size, String category, String brand, String search, String sort) {
 	        Query query = new Query();
 
-	        // ✅ Filtering
-	        if (category != null && !category.isEmpty()) {
-	            query.addCriteria(Criteria.where("category").is(category));
-	        }
-	        if (brand != null && !brand.isEmpty()) {
-	            query.addCriteria(Criteria.where("brand").is(brand));
-	        }
-
-	        // ✅ Search by keyword
-	        if (search != null && !search.isEmpty()) {
-	            query.addCriteria(new Criteria().orOperator(
-	                    Criteria.where("name").regex(search, "i"),
-	                    Criteria.where("description").regex(search, "i")
-	            ));
-	        }
+  
 
 	        // ✅ Sorting
 	        Sort sorting = Sort.by("createdAt").descending(); // default
